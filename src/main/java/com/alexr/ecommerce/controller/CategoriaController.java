@@ -2,7 +2,6 @@ package com.alexr.ecommerce.controller;
 
 import com.alexr.ecommerce.dto.CategoriaRequestDTO;
 import com.alexr.ecommerce.dto.CategoriaResponseDTO;
-import com.alexr.ecommerce.model.Categoria;
 import com.alexr.ecommerce.service.CategoriaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

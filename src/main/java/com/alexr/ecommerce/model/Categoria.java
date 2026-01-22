@@ -19,8 +19,7 @@ public class Categoria {
     // Constructores
     public Categoria() {}
 
-    public Categoria(Long id, String nombre) {
-        this.id = id;
+    public Categoria(String nombre) {
         this.nombre = nombre;
     }
 

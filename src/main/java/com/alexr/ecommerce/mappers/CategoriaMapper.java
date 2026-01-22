@@ -14,7 +14,6 @@ public class CategoriaMapper {
 
     public static Categoria toEntity(CategoriaRequestDTO c){
         return new Categoria(
-                null,
                 c.getNombre()
         );
     }
