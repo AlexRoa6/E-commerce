@@ -1,9 +1,7 @@
 package com.alexr.ecommerce.handler;
 
 import com.alexr.ecommerce.dto.ErrorResponse;
-import com.alexr.ecommerce.exception.CategoriaConProductosException;
-import com.alexr.ecommerce.exception.CategoriaNotFoundException;
-import com.alexr.ecommerce.exception.ProductoNotFoundException;
+import com.alexr.ecommerce.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -81,6 +79,40 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(UsuarioYaExisteException.class)
+    public ResponseEntity<ErrorResponse> handleUsuarioYaExisteException(UsuarioYaExisteException e){
+
+        ErrorResponse error = new ErrorResponse(
+                409,
+                e.getMessage(),
+                "Registro invalido"
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(UsuarioNoRegistradoException.class)
+    public ResponseEntity<ErrorResponse> handleUsuarioNoRegistradoException(UsuarioNoRegistradoException e){
+        ErrorResponse error = new ErrorResponse(
+                401,
+                e.getMessage(),
+                "Login invalido"
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(PasswordInvalidaException.class)
+    public ResponseEntity<ErrorResponse> handlePasswordInvalidaException(PasswordInvalidaException e){
+        ErrorResponse error = new ErrorResponse(
+                401,
+                e.getMessage(),
+                "Login invalida"
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
 
