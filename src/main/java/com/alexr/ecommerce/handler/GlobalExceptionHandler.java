@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
           404,
                 e.getMessage(),
-                "Opercaion no permitida"
+                "Categoria no encontrada"
 
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);

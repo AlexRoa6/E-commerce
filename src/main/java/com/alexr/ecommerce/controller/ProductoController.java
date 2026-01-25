@@ -33,7 +33,7 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoResponseDTO> save (@Valid @RequestBody ProductoRequestDTO producto){
+    public ResponseEntity<ProductoResponseDTO> save(@Valid @RequestBody ProductoRequestDTO producto){
         ProductoResponseDTO p = service.save(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(p);
     }
