@@ -8,6 +8,9 @@ import com.alexr.ecommerce.service.CategoriaService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,22 +39,26 @@ public class CategoriaControllerTest {
 
     @Test
     void findAllSinCategorias_debeDevolverListaVacia() throws Exception {
-        when(service.findAll()).thenReturn(List.of());
+        Page<CategoriaResponseDTO> page = new PageImpl<>(List.of());
+        when(service.findAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/categorias"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[]"));
+                .andExpect(jsonPath("$.content.length()").value(0));
+
     }
 
     @Test
     void findAllConCategorias_debeDevolverLista() throws Exception {
         CategoriaResponseDTO c1 = new CategoriaResponseDTO(1L, "Portatiles");
         CategoriaResponseDTO c2 = new CategoriaResponseDTO(2L, "Moviles");
-        when(service.findAll()).thenReturn(List.of(c1, c2));
+        Page<CategoriaResponseDTO> page = new PageImpl<>(List.of(c1, c2));
+        when(service.findAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/categorias"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(List.of(c1, c2))));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test

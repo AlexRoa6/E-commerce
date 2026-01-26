@@ -4,11 +4,12 @@ import com.alexr.ecommerce.dto.CategoriaRequestDTO;
 import com.alexr.ecommerce.dto.CategoriaResponseDTO;
 import com.alexr.ecommerce.service.CategoriaService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("api/categorias")
@@ -22,8 +23,8 @@ public class CategoriaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoriaResponseDTO>> findAll(){
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<CategoriaResponseDTO>> findAll(Pageable pageable){
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")

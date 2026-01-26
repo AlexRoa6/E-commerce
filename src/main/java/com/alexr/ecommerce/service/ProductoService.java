@@ -9,6 +9,8 @@ import com.alexr.ecommerce.model.Categoria;
 import com.alexr.ecommerce.model.Producto;
 import com.alexr.ecommerce.repository.CategoriaRepository;
 import com.alexr.ecommerce.repository.ProductoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +25,9 @@ public class ProductoService {
         this.repoC = repoC;
     }
 
-    public List<ProductoResponseDTO> findAll() {
-        return repoP.findAll().stream().map(ProductoMapper::toDTO).toList();
+    public Page<ProductoResponseDTO> findAll(Pageable pageable) {
+        Page<Producto> productos = repoP.findAll(pageable);
+        return productos.map(p -> ProductoMapper.toDTO(p));
     }
 
     public ProductoResponseDTO findById(Long id) {

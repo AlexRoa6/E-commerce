@@ -13,11 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -105,11 +109,12 @@ public class ProductoServiceTest {
 
     @Test
     void cuandoNoHayProductos_debeDevolverListaVacia(){
-        when(productoRepository.findAll()).thenReturn(List.of());
+        Page<Producto> page = new PageImpl<>(List.of());
+        when(productoRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        List<ProductoResponseDTO> productos = productoService.findAll();
+        Page<ProductoResponseDTO> resultado = productoService.findAll(Pageable.unpaged());
 
-        assertTrue(productos.isEmpty());
+        assertTrue(resultado.isEmpty());
     }
 
     @Test
@@ -120,11 +125,11 @@ public class ProductoServiceTest {
 
         Producto p = new Producto("MacBook", 10, BigDecimal.valueOf(1234.54), "Portatil de Apple", categoria);
         Producto p2 = new Producto("Iphone", 0, BigDecimal.valueOf(3123), "Movil de Apple", categoria);
-        when(productoRepository.findAll()).thenReturn(List.of(p,p2));
+        Page<Producto> page = new PageImpl<>(List.of(p, p2));
+        when(productoRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        List<ProductoResponseDTO> productos = productoService.findAll();
-
-        assertEquals(2, productos.size());
+        Page<ProductoResponseDTO> resultado = productoService.findAll(Pageable.unpaged());
+        assertThat(resultado.getContent()).hasSize(2);
     }
 
     @Test
