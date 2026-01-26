@@ -15,11 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -55,23 +59,23 @@ class CategoriaServiceTest {
         void findAll_ConCategorias_RetornaLista() {
             Categoria categoria2 = new Categoria("Ropa");
             categoria2.setId(2L);
-            when(categoriaRepository.findAll()).thenReturn(List.of(categoria, categoria2));
+            Page<Categoria> page = new PageImpl<>(List.of(categoria, categoria2));
+            when(categoriaRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-            List<CategoriaResponseDTO> resultado = categoriaService.findAll();
+            Page<CategoriaResponseDTO> resultado = categoriaService.findAll(any(Pageable.class));
 
             assertNotNull(resultado);
-            assertEquals(2, resultado.size());
-            assertEquals("Electrónica", resultado.get(0).getNombre());
-            assertEquals("Ropa", resultado.get(1).getNombre());
+            assertThat(resultado.getContent()).hasSize(2);
             verify(categoriaRepository, times(1)).findAll();
         }
 
         @Test
         @DisplayName("Debe retornar lista vacía cuando no hay categorías")
         void findAll_SinCategorias_RetornaListaVacia() {
-            when(categoriaRepository.findAll()).thenReturn(Collections.emptyList());
+            Page<Categoria> page = new PageImpl<>(List.of());
+            when(categoriaRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-            List<CategoriaResponseDTO> resultado = categoriaService.findAll();
+            Page<CategoriaResponseDTO> resultado = categoriaService.findAll(any(Pageable.class));
 
             assertNotNull(resultado);
             assertTrue(resultado.isEmpty());

@@ -5,6 +5,8 @@ import com.alexr.ecommerce.dto.ProductoResponseDTO;
 import com.alexr.ecommerce.model.Producto;
 import com.alexr.ecommerce.service.ProductoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +25,8 @@ public class ProductoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductoResponseDTO>> findAll(){
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<ProductoResponseDTO>> findAll(Pageable pageable){
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")

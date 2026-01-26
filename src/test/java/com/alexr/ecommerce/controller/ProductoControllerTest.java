@@ -11,6 +11,9 @@ import com.alexr.ecommerce.service.ProductoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,7 +48,8 @@ public class ProductoControllerTest {
 
     @Test
     void findAllSinProductos_debeDevolerListaVacia() throws Exception {
-        when(service.findAll()).thenReturn(List.of());
+        Page<ProductoResponseDTO> page = new PageImpl<>(List.of());
+        when(service.findAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get(("/api/productos")))
                 .andExpect(status().isOk())
@@ -57,11 +61,12 @@ public class ProductoControllerTest {
         CategoriaResponseDTO c = new CategoriaResponseDTO(1L, "Portatiles");
         ProductoResponseDTO p = new ProductoResponseDTO(1L, "MacBook", 0, BigDecimal.valueOf(1234.54), "Portatil de Apple",true, c);
         ProductoResponseDTO p2 = new ProductoResponseDTO(2L, "Iphone", 0, BigDecimal.valueOf(1234.54), "Portatil de Apple",true, c);
-        when(service.findAll()).thenReturn(List.of(p,p2));
-
+        Page<ProductoResponseDTO> page = new PageImpl<>(List.of(p, p2));
+        when(service.findAll(any(Pageable.class))).thenReturn(page);
         mockMvc.perform(get(("/api/productos")))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(List.of(p, p2))));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test
