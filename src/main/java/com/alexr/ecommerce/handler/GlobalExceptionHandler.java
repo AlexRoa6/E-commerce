@@ -2,6 +2,7 @@ package com.alexr.ecommerce.handler;
 
 import com.alexr.ecommerce.dto.ErrorResponse;
 import com.alexr.ecommerce.exception.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -67,6 +68,36 @@ public class GlobalExceptionHandler {
 
         ErrorResponse error = new ErrorResponse(400, mensaje, "Error de validación");
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String mensaje = "Error al procesar la operación";
+
+        // Detectar errores de constraint de unicidad
+        String exceptionMessage = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+
+        if (exceptionMessage.contains("duplicate entry") || exceptionMessage.contains("unique")) {
+            if (exceptionMessage.contains("categoria")) {
+                mensaje = "Ya existe una categoría con ese nombre";
+            } else if (exceptionMessage.contains("producto")) {
+                mensaje = "Ya existe un producto con ese nombre";
+            } else if (exceptionMessage.contains("usuario") || exceptionMessage.contains("username")) {
+                mensaje = "Ya existe un usuario con ese nombre";
+            } else {
+                mensaje = "El valor ingresado ya existe en el sistema";
+            }
+        } else if (exceptionMessage.contains("foreign key") || exceptionMessage.contains("cannot delete")) {
+            mensaje = "No se puede eliminar porque hay registros relacionados";
+        }
+
+        ErrorResponse error = new ErrorResponse(
+                409,
+                mensaje,
+                "Conflicto de datos"
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(Exception.class)
