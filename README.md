@@ -2,17 +2,24 @@
 
 API REST para un sistema de ecommerce desarrollada con Spring Boot. Proyecto de aprendizaje para practicar arquitectura en capas, seguridad con JWT, y buenas prácticas en el desarrollo de APIs.
 
-## Tecnologías
+## Demo
 
-- **Java 25**
+- API: https://e-commerce-production-33eb.up.railway.app
+- Swagger: https://e-commerce-production-33eb.up.railway.app/swagger-ui/index.html
+
+## Tecnologias
+
+- **Java 21**
 - **Spring Boot 4.0.1**
-- **Spring Security** - Autenticación y autorización
+- **Spring Security** - Autenticacion y autorizacion
 - **JWT (JSON Web Tokens)** - Tokens de acceso
 - **Spring Data JPA** - Persistencia de datos
 - **MySQL** - Base de datos
-- **Bean Validation** - Validación de datos
-- **SpringDoc OpenAPI** - Documentación Swagger
-- **Maven** - Gestión de dependencias
+- **Bean Validation** - Validacion de datos
+- **SpringDoc OpenAPI** - Documentacion Swagger
+- **Maven** - Gestion de dependencias
+- **Docker** - Contenedorizacion
+- **Railway** - Despliegue en la nube
 
 ## Arquitectura
 
@@ -21,11 +28,11 @@ El proyecto sigue una arquitectura en capas:
 ```
 com.alexr.ecommerce/
 ├── controller/     # Endpoints REST
-├── service/        # Lógica de negocio
+├── service/        # Logica de negocio
 ├── repository/     # Acceso a datos (JPA)
 ├── model/          # Entidades JPA
 ├── dto/            # Data Transfer Objects
-├── mappers/        # Conversión Entity <-> DTO
+├── mappers/        # Conversion Entity <-> DTO
 ├── config/         # Configuraciones (Security, JWT)
 ├── handler/        # Manejo global de excepciones
 └── exception/      # Excepciones personalizadas
@@ -33,17 +40,19 @@ com.alexr.ecommerce/
 
 ## Funcionalidades
 
-- **Autenticación JWT**: Registro y login con tokens de acceso
+- **Autenticacion JWT**: Registro y login con tokens de acceso
 - **CRUD de Productos**: Crear, leer, actualizar y eliminar productos
-- **CRUD de Categorías**: Gestión de categorías de productos
-- **Paginación**: Soporte para paginación en listados
-- **Validación**: Validación de datos en DTOs y entidades
+- **CRUD de Categorias**: Gestion de categorias de productos
+- **Paginacion**: Soporte para paginacion en listados
+- **Validacion**: Validacion de datos en DTOs y entidades
 - **Manejo de errores**: Respuestas de error estandarizadas
-- **Documentación API**: Swagger UI disponible
+- **Documentacion API**: Swagger UI disponible
+- **Tests**: Tests unitarios e integracion con JUnit y Mockito
 
 ## Modelo de Datos
 
 ### Diagrama de Base de Datos
+
 ```
 ┌──────────────┐       ┌──────────────┐       ┌──────────────┐
 │   Usuario    │       │   Producto   │       │  Categoria   │
@@ -59,74 +68,98 @@ com.alexr.ecommerce/
 ```
 
 ### Usuario
-| Campo    | Tipo   | Descripción                    |
+
+| Campo    | Tipo   | Descripcion                    |
 |----------|--------|--------------------------------|
-| id       | Long   | Identificador único            |
-| nombre   | String | Nombre de usuario (único)      |
-| password | String | Contraseña encriptada (BCrypt) |
+| id       | Long   | Identificador unico            |
+| nombre   | String | Nombre de usuario (unico)      |
+| password | String | Contrasena encriptada (BCrypt) |
 | rol      | Enum   | ROLE_USUARIO o ROLE_ADMIN      |
 
 ### Producto
-| Campo       | Tipo       | Descripción                      |
+
+| Campo       | Tipo       | Descripcion                      |
 |-------------|------------|----------------------------------|
-| id          | Long       | Identificador único              |
+| id          | Long       | Identificador unico              |
 | nombre      | String     | Nombre del producto              |
 | stock       | int        | Cantidad disponible              |
 | precio      | BigDecimal | Precio del producto              |
-| descripcion | String     | Descripción (opcional)           |
-| disponible  | boolean    | Calculado automáticamente        |
-| categoria   | Categoria  | Categoría asociada               |
+| descripcion | String     | Descripcion (opcional)           |
+| disponible  | boolean    | Calculado automaticamente        |
+| categoria   | Categoria  | Categoria asociada               |
 
 ### Categoria
-| Campo  | Tipo   | Descripción             |
+
+| Campo  | Tipo   | Descripcion             |
 |--------|--------|-------------------------|
-| id     | Long   | Identificador único     |
-| nombre | String | Nombre de la categoría  |
+| id     | Long   | Identificador unico     |
+| nombre | String | Nombre de la categoria  |
 
 ## Endpoints
 
-### Autenticación (públicos)
+### Autenticacion (publicos)
 
-| Método | Endpoint            | Descripción            |
-|--------|---------------------|------------------------|
-| POST   | /api/auth/register  | Registrar nuevo usuario|
-| POST   | /api/auth/login     | Iniciar sesión         |
+| Metodo | Endpoint            | Descripcion             |
+|--------|---------------------|-------------------------|
+| POST   | /api/auth/register  | Registrar nuevo usuario |
+| POST   | /api/auth/login     | Iniciar sesion          |
 
-### Productos (requieren autenticación)
+### Productos (requieren autenticacion)
 
-| Método | Endpoint            | Descripción                |
-|--------|---------------------|----------------------------|
-| GET    | /api/productos      | Listar productos (paginado)|
-| GET    | /api/productos/{id} | Obtener producto por ID    |
-| POST   | /api/productos      | Crear producto             |
-| PUT    | /api/productos/{id} | Actualizar producto        |
-| DELETE | /api/productos/{id} | Eliminar producto          |
+| Metodo | Endpoint            | Descripcion                 |
+|--------|---------------------|-----------------------------|
+| GET    | /api/productos      | Listar productos (paginado) |
+| GET    | /api/productos/{id} | Obtener producto por ID     |
+| POST   | /api/productos      | Crear producto              |
+| PUT    | /api/productos/{id} | Actualizar producto         |
+| DELETE | /api/productos/{id} | Eliminar producto           |
 
-### Categorías (requieren autenticación)
+### Categorias (requieren autenticacion)
 
-| Método | Endpoint             | Descripción                 |
-|--------|----------------------|-----------------------------|
-| GET    | /api/categorias      | Listar categorías (paginado)|
-| GET    | /api/categorias/{id} | Obtener categoría por ID    |
-| POST   | /api/categorias      | Crear categoría             |
-| PUT    | /api/categorias/{id} | Actualizar categoría        |
-| DELETE | /api/categorias/{id} | Eliminar categoría          |
+| Metodo | Endpoint             | Descripcion                  |
+|--------|----------------------|------------------------------|
+| GET    | /api/categorias      | Listar categorias (paginado) |
+| GET    | /api/categorias/{id} | Obtener categoria por ID     |
+| POST   | /api/categorias      | Crear categoria              |
+| PUT    | /api/categorias/{id} | Actualizar categoria         |
+| DELETE | /api/categorias/{id} | Eliminar categoria           |
 
 ## Requisitos
 
-- Java 25+
+- Java 21+
 - Maven 3.8+
 - MySQL 8.0+
+- Docker (opcional)
 
-## Configuración
+## Configuracion
 
-### 1. Crear la base de datos
+### Opcion A: Ejecutar con Docker (recomendado)
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/AlexRoa6/E-commerce
+
+# Copiar variables de entorno
+cp .env.example .env
+
+# Editar .env con tus valores
+# DB_USERNAME, DB_PASSWORD, JWT_SECRET, MYSQL_ROOT_PASSWORD
+
+# Levantar con Docker
+docker-compose up --build
+```
+
+La API estara disponible en `http://localhost:8080`
+
+### Opcion B: Ejecutar en local
+
+#### 1. Crear la base de datos
 
 ```sql
 CREATE DATABASE ecommerce_db;
 ```
 
-### 2. Configurar variables de entorno
+#### 2. Configurar variables de entorno
 
 ```bash
 # Linux/Mac
@@ -145,33 +178,31 @@ $env:DB_PASSWORD="tu_contrasena"
 $env:JWT_SECRET="tu_clave_secreta_base64_minimo_32_caracteres"
 ```
 
-### 3. Ejecutar la aplicación
+#### 3. Ejecutar la aplicacion
 
 ```bash
-# Compilar
-mvn clean install
-
-# Ejecutar
 mvn spring-boot:run
 ```
 
-La API estará disponible en `http://localhost:8080`
+La API estara disponible en `http://localhost:8080`
 
-## Documentación API
+## Documentacion API
 
-Swagger UI disponible en: `http://localhost:8080/swagger-ui.html`
+- Local: `http://localhost:8080/swagger-ui/index.html`
+- Produccion: `https://e-commerce-production-33eb.up.railway.app/swagger-ui/index.html`
 
 ## Uso
 
 ### Registrar usuario
 
 ```bash
-curl -X POST http://localhost:8080/api/auth/register \
+curl -X POST https://e-commerce-production-33eb.up.railway.app/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"nombre": "usuario1", "password": "12345"}'
 ```
 
 Respuesta:
+
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -181,7 +212,7 @@ Respuesta:
 ### Crear producto (con token)
 
 ```bash
-curl -X POST http://localhost:8080/api/productos \
+curl -X POST https://e-commerce-production-33eb.up.railway.app/api/productos \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer {tu_token}" \
   -d '{
@@ -193,32 +224,44 @@ curl -X POST http://localhost:8080/api/productos \
   }'
 ```
 
-## Lo que aprendí
+## Tests
 
-Este proyecto me permitió practicar:
+El proyecto cuenta con tests unitarios e integración:
 
-- Arquitectura en capas y separación de responsabilidades
-- Implementación de autenticación JWT desde cero
-- Configuración de Spring Security
-- Validación de datos con Bean Validation
+```bash
+mvn test
+```
+
+| Tipo | Clases | Herramientas |
+|------|--------|--------------|
+| Unitarios | ProductoServiceTest, CategoriaServiceTest | JUnit, Mockito |
+| Integracion | ProductoControllerTest, CategoriaControllerTest | MockMvc |
+
+## Lo que aprendi
+
+Este proyecto me permitio practicar:
+
+- Arquitectura en capas y separacion de responsabilidades
+- Implementacion de autenticacion JWT desde cero
+- Configuracion de Spring Security
+- Validacion de datos con Bean Validation
 - Manejo centralizado de excepciones
-- Paginación con Spring Data
-- Documentación de APIs con Swagger/OpenAPI
-- Buenas prácticas en desarrollo de APIs REST
+- Paginacion con Spring Data
+- Documentacion de APIs con Swagger/OpenAPI
+- Tests unitarios e integracion
+- Contenedorizacion con Docker
+- Despliegue en la nube con Railway
+- Buenas practicas en desarrollo de APIs REST
 
 ## Posibles mejoras
 
-- [ ] Implementar roles y permisos más granulares
+- [ ] Implementar roles y permisos mas granulares
 - [ ] Agregar carrito de compras
-- [ ] Implementar órdenes de compra
-- [ ] Agregar imágenes a productos
-- [ ] Implementar búsqueda y filtros avanzados
+- [ ] Implementar ordenes de compra
+- [ ] Agregar imagenes a productos
+- [ ] Implementar busqueda y filtros avanzados
 - [ ] Cache con Redis
-- [ ] Dockerizar la aplicación
 
 ## Autor
 
 Alex Roa
-
----
-
