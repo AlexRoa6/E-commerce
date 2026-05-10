@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         String mensaje = "Error al procesar la operación";
 
-        // Detectar errores de constraint de unicidad
+
         String exceptionMessage = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
 
         if (exceptionMessage.contains("duplicate entry") || exceptionMessage.contains("unique")) {
